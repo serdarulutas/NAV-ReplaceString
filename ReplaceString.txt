@@ -1,0 +1,56 @@
+OBJECT Codeunit 50001 ReplaceString
+{
+  OBJECT-PROPERTIES
+  {
+    Date=05/19/15;
+    Time=[ 1:10:50 PM];
+    Modified=Yes;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+            ReplaceString_Test;
+          END;
+
+  }
+  CODE
+  {
+
+    PROCEDURE ReplaceString@1000000001(String@1000000000 : Text[1024];FindWhat@1000000001 : Text[250];ReplaceWith@1000000002 : Text[250]) NewString : Text[1024];
+    VAR
+      Loop2@1000000003 : Boolean;
+      Pos2@1000000004 : Integer;
+      TempString2@1000000005 : Text[1024];
+    BEGIN
+      Loop2 := TRUE;
+      Pos2 := 0;
+      TempString2 := String;
+      WHILE Loop2 DO BEGIN
+        Pos2 := STRPOS(TempString2,FindWhat);
+        IF Pos2 <= 0 THEN BEGIN
+          Loop2 := FALSE;
+          NewString += TempString2;
+        END ELSE BEGIN
+          NewString += COPYSTR(TempString2,1,Pos2-1) + ReplaceWith;
+          TempString2 := COPYSTR(TempString2,Pos2+STRLEN(FindWhat));
+        END;
+      END;
+    END;
+
+    PROCEDURE ReplaceString_Test@1000000003();
+    VAR
+      PANGRAM@1000000000 : TextConst 'ENU=The Quick Brown Fox Jumps Over The Lazy Dog';
+      TEXT001@1000000001 : TextConst 'ENU=String replace Example of replacing Character Sequence';
+    BEGIN
+      //MESSAGE('%1',ReplaceString(PANGRAM,'The','A'));
+      //MESSAGE('%1',ReplaceString('1.2.3.4.6.7.8','.','-'));
+      //MESSAGE('%1',ReplaceString('<br>This is  text<br>','<br>','<br />'));
+      MESSAGE('%1',ReplaceString(TEXT001,'e','*'));
+    END;
+
+    BEGIN
+    END.
+  }
+}
+
